@@ -4,7 +4,9 @@ import java.util.UUID;
 
 public class Crime {
 
+	//Crime ID
 	private UUID mId;
+	//Crime title
 	private String mTitle;
 
 	public Crime() {
