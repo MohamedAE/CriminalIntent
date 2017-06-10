@@ -1,5 +1,7 @@
 package criminalintent.android.bignerdranch.com.criminalintent;
 
+import android.content.Context;
+import android.content.Intent;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 import android.os.Bundle;
@@ -21,7 +23,6 @@ public class CrimeActivity extends FragmentActivity {
 			//Create new fragment; include add operation (add fragment to activity); commit
 			fragment = new CrimeFragment();
 			fm.beginTransaction().add(R.id.fragment_container, fragment).commit();
-			//ermahgerd
 		}
 	}
 

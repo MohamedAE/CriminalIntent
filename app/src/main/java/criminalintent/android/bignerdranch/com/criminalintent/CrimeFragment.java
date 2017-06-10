@@ -1,5 +1,6 @@
 package criminalintent.android.bignerdranch.com.criminalintent;
 
+import android.icu.util.Calendar;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.text.Editable;
@@ -11,6 +12,8 @@ import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.EditText;
+
+import java.text.SimpleDateFormat;
 
 public class CrimeFragment extends Fragment {
 
@@ -54,7 +57,8 @@ public class CrimeFragment extends Fragment {
 
 		mDateButton = (Button) v.findViewById(R.id.crime_date);
 		//Display date on button
-		mDateButton.setText(mCrime.getmDate().toString());
+		SimpleDateFormat simpleDateFormat = new SimpleDateFormat("EEEE, MMM F, yyyy");
+		mDateButton.setText(simpleDateFormat.format(mCrime.getmDate()));
 		//Disable button
 		mDateButton.setEnabled(false);
 
