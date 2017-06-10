@@ -21,6 +21,7 @@ public class CrimeActivity extends FragmentActivity {
 			//Create new fragment; include add operation (add fragment to activity); commit
 			fragment = new CrimeFragment();
 			fm.beginTransaction().add(R.id.fragment_container, fragment).commit();
+			//ermahgerd
 		}
 	}
 
