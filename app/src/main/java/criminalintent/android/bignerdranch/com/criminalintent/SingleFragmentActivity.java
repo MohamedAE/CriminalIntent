@@ -21,7 +21,7 @@ public abstract class SingleFragmentActivity extends FragmentActivity {
 
 		if (fragment == null) {
 			//Create new fragment; include add operation (add fragment to activity); commit
-			fragment = new CrimeFragment();
+			fragment = createFragment();
 			fm.beginTransaction()
 					.add(R.id.fragment_container, fragment)
 					.commit();
