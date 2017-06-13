@@ -4,6 +4,7 @@ import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.text.Layout;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -16,6 +17,7 @@ import java.util.List;
 public class CrimeListFragment extends Fragment {
 
 	private RecyclerView mCrimeRecyclerView;
+	private CrimeAdapter mAdapter;
 
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -27,12 +29,20 @@ public class CrimeListFragment extends Fragment {
 		//Give it a LayoutManager
 		mCrimeRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
 
+		updateUI();
+
 		return view;
 	}
 
-	/*
-	ViewHolder
-	 */
+	private void updateUI() {
+		CrimeLab crimeLab = CrimeLab.get(getActivity());
+		List<Crime> crimes = crimeLab.getCrimes();
+
+		mAdapter = new CrimeAdapter(crimes);
+		mCrimeRecyclerView.setAdapter(mAdapter);
+	}
+
+	//ViewHolder
 	private class CrimeHolder extends RecyclerView.ViewHolder {
 		public TextView mTitleTextView;
 
@@ -40,6 +50,7 @@ public class CrimeListFragment extends Fragment {
 			super(itemView);
 
 			mTitleTextView = (TextView) itemView;
+			mTitleTextView.setText("lorem ipsum");
 		}
 	}
 	/*
@@ -50,6 +61,33 @@ public class CrimeListFragment extends Fragment {
 
 		public CrimeAdapter(List<Crime> crimes) {
 			mCrimes = crimes;
+		}
+
+		/*
+		Create a new View; wrap it in a ViewHolder
+		simple_list_item_1 - Android standard lib for generic list item
+		*/
+		@Override
+		public CrimeHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+			//Create View; wrap it in ViewHolder
+			LayoutInflater layoutInflater = LayoutInflater.from(getActivity());
+			View view = layoutInflater.inflate(android.R.layout.simple_list_item_1, parent, false);
+			return new CrimeHolder(view);
+		}
+
+		/*
+		Binds ViewHolder's View to model object
+		@params - ViewHolder; index of model in collection
+		 */
+		@Override
+		public void onBindViewHolder(CrimeHolder holder, int position) {
+			Crime crime = mCrimes.get(position);
+			holder.mTitleTextView.setText(crime.getTitle());
+		}
+
+		@Override
+		public int getItemCount() {
+			return mCrimes.size();
 		}
 	}
 
