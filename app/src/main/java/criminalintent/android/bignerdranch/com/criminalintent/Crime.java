@@ -31,19 +31,19 @@ public class Crime {
 		mTitle = title;
 	}
 
-	public Date getmDate() {
+	public Date getDate() {
 		return mDate;
 	}
 
-	public void setmDate(Date mDate) {
+	public void setDate(Date mDate) {
 		this.mDate = mDate;
 	}
 
-	public boolean ismSolved() {
+	public boolean isSolved() {
 		return mSolved;
 	}
 
-	public void setmSolved(boolean mSolved) {
+	public void setSolved(boolean mSolved) {
 		this.mSolved = mSolved;
 	}
 

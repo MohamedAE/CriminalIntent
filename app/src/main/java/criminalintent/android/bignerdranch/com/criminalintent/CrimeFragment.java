@@ -57,7 +57,7 @@ public class CrimeFragment extends Fragment {
 		mDateButton = (Button) v.findViewById(R.id.crime_date);
 		//Display date on button
 		SimpleDateFormat simpleDateFormat = new SimpleDateFormat("EEEE, MMM F, yyyy");
-		mDateButton.setText(simpleDateFormat.format(mCrime.getmDate()));
+		mDateButton.setText(simpleDateFormat.format(mCrime.getDate()));
 		//Disable button
 		mDateButton.setEnabled(false);
 
@@ -66,7 +66,7 @@ public class CrimeFragment extends Fragment {
 			@Override
 			public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
 				//Set the crime's solved property
-				mCrime.setmSolved(isChecked);
+				mCrime.setSolved(isChecked);
 			}
 		});
 
