@@ -29,6 +29,7 @@ public class CrimeFragment extends Fragment {
 	Creates a Bundle
 	Creates a CrimeFragment
 	Attaches the Bundle to the CrimeFragment
+	Returns Fragment
 	 */
 	public static CrimeFragment newInstance(UUID crimeId) {
 		Bundle args = new Bundle();
