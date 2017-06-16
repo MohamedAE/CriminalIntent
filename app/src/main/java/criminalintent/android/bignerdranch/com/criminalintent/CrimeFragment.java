@@ -26,11 +26,10 @@ public class CrimeFragment extends Fragment {
 
 	/*
 	Accepts UUID
-	Creates a Bundle
-	Creates a CrimeFragment
+	Creates a Bundle and a CrimeFragment
 	Attaches the Bundle to the CrimeFragment
 	Returns Fragment
-	 */
+	*/
 	public static CrimeFragment newInstance(UUID crimeId) {
 		Bundle args = new Bundle();
 		args.putSerializable(ARG_CRIME_ID, crimeId);
@@ -51,7 +50,7 @@ public class CrimeFragment extends Fragment {
 
 	/*
 	Called by host Activity
-	Explicitly inflates fragment view; returns fragment view to host Activity (caller)
+	Explicitly inflates fragment view; returns fragment view to host Activity
 	 */
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
