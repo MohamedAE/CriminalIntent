@@ -30,7 +30,7 @@ public class DatePickerFragment extends android.support.v4.app.DialogFragment {
 	}
 
 	/*
-	Builds a dialog window with
+	Builds a dialog window with:
 		a title
 		an OK button
 	 */
