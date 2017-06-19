@@ -2,6 +2,7 @@ package criminalintent.android.bignerdranch.com.criminalintent;
 
 import android.app.AlertDialog;
 import android.app.Dialog;
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -11,6 +12,8 @@ import java.util.Calendar;
 import java.util.Date;
 
 public class DatePickerFragment extends android.support.v4.app.DialogFragment {
+
+	private static final String EXTRA_DATE = "com.bignerdranch.android.criminalintent.date";
 
 	private static final String ARG_DATE = "date";
 
@@ -38,9 +41,7 @@ public class DatePickerFragment extends android.support.v4.app.DialogFragment {
 	public Dialog onCreateDialog(Bundle savedInstanceState) {
 		Date date = (Date) getArguments().getSerializable(ARG_DATE);
 
-		/*
-		Date objects contain a complete timestamp; must be broken into components
-		 */
+		//Date objects contain a complete timestamp; must be broken into components
 		Calendar calendar = Calendar.getInstance();
 		calendar.setTime(date);
 		int year = calendar.get(Calendar.YEAR);
@@ -59,6 +60,18 @@ public class DatePickerFragment extends android.support.v4.app.DialogFragment {
 				.setTitle(R.string.date_picker_title)
 				.setPositiveButton(android.R.string.ok, null)
 				.create();
+	}
+
+	private void sendResult(int resultCode, Date date) {
+		if (getTargetFragment() == null) {
+			return;
+		}
+		//Packages date into Intent
+		Intent intent = new Intent();
+		intent.putExtra(EXTRA_DATE, date);
+
+		//
+		getTargetFragment().onActivityResult(getTargetRequestCode(), resultCode, intent);
 	}
 
 }
