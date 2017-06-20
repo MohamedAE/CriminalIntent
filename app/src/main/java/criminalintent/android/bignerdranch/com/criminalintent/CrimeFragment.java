@@ -19,8 +19,6 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.UUID;
 
-import static android.R.attr.data;
-
 public class CrimeFragment extends Fragment {
 
 	private static final String ARG_CRIME_ID = "crime_id";
