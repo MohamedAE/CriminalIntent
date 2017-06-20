@@ -1,5 +1,7 @@
 package criminalintent.android.bignerdranch.com.criminalintent;
 
+import android.app.Activity;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
@@ -14,7 +16,10 @@ import android.widget.CompoundButton;
 import android.widget.EditText;
 
 import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.UUID;
+
+import static android.R.attr.data;
 
 public class CrimeFragment extends Fragment {
 
@@ -86,11 +91,13 @@ public class CrimeFragment extends Fragment {
 		SimpleDateFormat simpleDateFormat = new SimpleDateFormat("EEEE, MMM F, yyyy");
 		mDateButton.setText(simpleDateFormat.format(mCrime.getDate()));
 
+		//Generate and display DatePickerFragment; pass to it model object's current date
 		mDateButton.setOnClickListener(new View.OnClickListener() {
 			@Override
 			public void onClick(View v) {
 				FragmentManager manager = getFragmentManager();
 				DatePickerFragment dialog = DatePickerFragment.newInstance(mCrime.getDate());
+				//Set target fragment (DatePickerFragment)
 				dialog.setTargetFragment(CrimeFragment.this, REQUEST_DATE);
 				dialog.show(manager, DIALOG_DATE);
 			}
@@ -107,6 +114,21 @@ public class CrimeFragment extends Fragment {
 		});
 
 		return v;
+	}
+
+	//Method to respond to Intent received from target Fragment (DatePickerFragment)
+	@Override
+	public void onActivityResult(int requestCode, int resultCode, Intent data) {
+		if (resultCode != Activity.RESULT_OK) {
+			return;
+		}
+
+		//Retrieve Date info from Intent; update
+		if (requestCode == REQUEST_DATE) {
+			Date date = (Date) data.getSerializableExtra(DatePickerFragment.EXTRA_DATE);
+			mCrime.setDate(date);
+			mDateButton.setText(mCrime.getDate().toString());
+		}
 	}
 
 }

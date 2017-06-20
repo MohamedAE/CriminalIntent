@@ -113,7 +113,7 @@ public class CrimeListFragment extends Fragment {
 		/*
 		Binds ViewHolder's View to model object
 		@params - ViewHolder; index of model in collection
-		 */
+		*/
 		@Override
 		public void onBindViewHolder(CrimeHolder holder, int position) {
 			Crime crime = mCrimes.get(position);
