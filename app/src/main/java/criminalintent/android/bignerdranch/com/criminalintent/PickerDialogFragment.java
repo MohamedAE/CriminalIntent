@@ -38,9 +38,11 @@ public abstract class PickerDialogFragment extends DialogFragment {
 
 		View v = initLayout();
 
+		//Configure dialog to display the passed in View (this fragment)
 		return new AlertDialog.Builder(getActivity())
 				.setTitle(R.string.date_picker_title)
 				.setView(v)
+				//Dialog's confirmation button returns date to CrimeFragment (parent)
 				.setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
 					@Override
 					public void onClick(DialogInterface dialog, int which) {

@@ -20,6 +20,10 @@ public class TimePickerFragment extends PickerDialogFragment {
 		return fragment;
 	}
 
+	/*
+	Inflate DatePicker layout
+	Pull current data from model object
+	 */
 	protected View initLayout() {
 		View v = LayoutInflater.from(getActivity()).inflate(R.layout.dialog_time, null);
 
