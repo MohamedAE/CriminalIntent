@@ -29,6 +29,7 @@ public abstract class PickerDialogFragment extends DialogFragment {
 		return args;
 	}
 
+	//Builds custom Dialog container
 	@NonNull
 	@Override
 	public Dialog onCreateDialog(Bundle savedInstanceState) {
