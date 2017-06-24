@@ -8,12 +8,16 @@ import android.support.v4.app.FragmentManager;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.EditText;
+import android.widget.Toast;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -54,9 +58,31 @@ public class CrimeFragment extends Fragment {
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 
+		setHasOptionsMenu(true);
+
 		UUID crimeId = (UUID) getArguments().getSerializable(ARG_CRIME_ID);
 
 		mCrime = CrimeLab.get(getActivity()).getCrime(crimeId);
+	}
+
+	//Inflate menu instance with items defined in the file
+	@Override
+	public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+		super.onCreateOptionsMenu(menu, inflater);
+		inflater.inflate(R.menu.fragment_crime, menu);
+	}
+
+	@Override
+	public boolean onOptionsItemSelected(MenuItem item) {
+		switch (item.getItemId()) {
+			case R.id.menu_item_delete_crime:
+				CrimeLab.get(getActivity()).deleteCrime(mCrime);
+				Toast.makeText(getActivity(), R.string.crime_deleted, Toast.LENGTH_SHORT).show();
+				getActivity().finish();
+				return true;
+			default:
+				return super.onOptionsItemSelected(item);
+		}
 	}
 
 	/*
