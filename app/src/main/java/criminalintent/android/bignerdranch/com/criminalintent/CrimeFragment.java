@@ -65,6 +65,13 @@ public class CrimeFragment extends Fragment {
 		mCrime = CrimeLab.get(getActivity()).getCrime(crimeId);
 	}
 
+	@Override
+	public void onPause() {
+		super.onPause();
+		//On pause, update this crime in the database
+		CrimeLab.get(getActivity()).updateCrime(mCrime);
+	}
+
 	//Inflate menu instance with items defined in the file
 	@Override
 	public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {

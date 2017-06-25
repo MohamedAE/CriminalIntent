@@ -28,13 +28,13 @@ public class CrimeListFragment extends Fragment {
 	private boolean mSubTitleVisible;
 	private int mLastAdapterClickPosition = -1;
 
-	private FrameLayout mFrameLayout;
+	//Parent of TextView overlay (displayed when no crimes are available)
 	private LinearLayout mLinearLayout;
 
-	//Report to FragmentManager that this Fragment has a menu
 	@Override
 	public void onCreate(Bundle onSavedInstanceState) {
 		super.onCreate(onSavedInstanceState);
+		//Report to FragmentManager that this Fragment has a menu
 		setHasOptionsMenu(true);
 	}
 
@@ -48,6 +48,7 @@ public class CrimeListFragment extends Fragment {
 		//Give it a LayoutManager
 		mCrimeRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
 
+		//Maintain subtitle visibility
 		if (savedInstanceState != null) {
 			mSubTitleVisible = savedInstanceState.getBoolean(SAVED_SUBTITLE_VISIBLE);
 		}
@@ -65,6 +66,7 @@ public class CrimeListFragment extends Fragment {
 		updateUI();
 	}
 
+	//Preserve subtitle visibility
 	@Override
 	public void onSaveInstanceState(Bundle outState) {
 		super.onSaveInstanceState(outState);
@@ -75,8 +77,10 @@ public class CrimeListFragment extends Fragment {
 	@Override
 	public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
 		super.onCreateOptionsMenu(menu, inflater);
+		//Inflate menu
 		inflater.inflate(R.menu.fragment_crime_list, menu);
 
+		//Toggle subtitle label
 		MenuItem subtitleItem = menu.findItem(R.id.menu_item_show_subtitle);
 		if (mSubTitleVisible) {
 			subtitleItem.setTitle(R.string.hide_subtitle);
@@ -135,6 +139,7 @@ public class CrimeListFragment extends Fragment {
 			mAdapter = new CrimeAdapter(crimes);
 			mCrimeRecyclerView.setAdapter(mAdapter);
 		} else {
+			mAdapter.setCrimes(crimes);
 			mAdapter.notifyDataSetChanged();
 		}
 
@@ -212,6 +217,11 @@ public class CrimeListFragment extends Fragment {
 		@Override
 		public int getItemCount() {
 			return mCrimes.size();
+		}
+
+		//Update field mCrimes with current database values
+		public void setCrimes(List<Crime> crimes) {
+			mCrimes = crimes;
 		}
 	}
 
