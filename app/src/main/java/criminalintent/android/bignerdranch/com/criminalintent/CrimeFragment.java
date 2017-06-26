@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
+import android.text.format.DateFormat;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.LayoutInflater;
@@ -173,6 +174,34 @@ public class CrimeFragment extends Fragment {
 	private void updateTime() {
 		SimpleDateFormat simpleTimeFormat = new SimpleDateFormat("HH : mm");
 		mTimeButton.setText(simpleTimeFormat.format(mCrime.getDate()));
+	}
+
+	//Construct and return a complete crime report
+	private String getCrimeReport() {
+		//Indicate crime solved status
+		String solvedString = null;
+		if (mCrime.isSolved()) {
+			solvedString = getString(R.string.crime_report_solved);
+		} else {
+			solvedString = getString(R.string.crime_report_unsolved);
+		}
+
+		//Format date of crime
+		String dateFormat = "EEE, MMM dd";
+		String dateString = DateFormat.format(dateFormat, mCrime.getDate()).toString();
+
+		//Format suspect
+		String suspect = mCrime.getSuspect();
+		if (suspect == null) {
+			suspect = getString(R.string.crime_report_no_suspect);
+		} else {
+			suspect = getString(R.string.crime_report_suspect);
+		}
+
+		//Assemble elements of report
+		String report = getString(R.string.crime_report, mCrime.getTitle(), dateString, solvedString, suspect);
+
+		return report;
 	}
 
 	//Method to respond to Intent received from target Fragment (DatePickerFragment)
