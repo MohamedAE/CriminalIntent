@@ -4,6 +4,8 @@ import android.app.Activity;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
+import android.graphics.Bitmap;
+import android.graphics.Point;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.ContactsContract;
@@ -20,6 +22,7 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.ViewTreeObserver;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
@@ -38,6 +41,7 @@ public class CrimeFragment extends Fragment {
 	private static final String ARG_CRIME_ID = "crime_id";
 	private static final String DIALOG_DATE = "DialogDate";
 	private static final String DIALOG_TIME = "DialogTime";
+	private static final String DIALOG_SUSPECT = "DialogSuspect";
 
 	//Request codes for target fragment (DatePickerFragment)
 	private static final int REQUEST_DATE = 0;
@@ -54,6 +58,7 @@ public class CrimeFragment extends Fragment {
 	private Button mSuspectButton;
 	private ImageButton mPhotoButton;
 	private ImageView mPhotoView;
+	private Point mPhotoViewSize;
 
 	private File mPhotoFile;
 
@@ -251,7 +256,33 @@ public class CrimeFragment extends Fragment {
 			}
 		});
 
+		/*
 		mPhotoView = (ImageView) v.findViewById(R.id.crime_photo);
+		mPhotoView.setOnClickListener(new View.OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				if (mPhotoFile != null && mPhotoFile.exists()) {
+					FragmentManager fm = getFragmentManager();
+					PhotoPreviewFragment.newInstance(mPhotoFile).show(fm, DIALOG_SUSPECT);
+				}
+			}
+		});
+		updatePhotoView();
+		*/
+
+		mPhotoView = (ImageView) v.findViewById(R.id.crime_photo);
+		mPhotoView.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
+			@Override
+			public void onGlobalLayout() {
+				boolean isFirstPass = (mPhotoViewSize == null);
+				mPhotoViewSize = new Point();
+				mPhotoViewSize.set(mPhotoView.getWidth(), mPhotoView.getHeight());
+
+				if (isFirstPass) {
+					updatePhotoView();
+				}
+			}
+		});
 
 		return v;
 	}
@@ -294,6 +325,31 @@ public class CrimeFragment extends Fragment {
 		String report = getString(R.string.crime_report, mCrime.getTitle(), dateString, solvedString, suspect);
 
 		return report;
+	}
+
+	private void updatePhotoView() {
+		/*
+		//If photo not found; blank
+		if (mPhotoFile == null || !mPhotoFile.exists()) {
+			mPhotoView.setImageDrawable(null);
+		} else {
+			Bitmap bitmap = PictureUtils.getScaledBitmap(mPhotoFile.getPath(), getActivity());
+			mPhotoView.setImageBitmap(bitmap);
+		}
+		*/
+		if (mPhotoFile == null || !mPhotoFile.exists()) {
+			mPhotoView.setImageDrawable(null);
+			return;
+		}
+
+		Bitmap bitmap;
+		if (mPhotoViewSize == null) {
+			bitmap = PictureUtils.getScaledBitmap(mPhotoFile.getPath(), getActivity());
+		} else {
+			bitmap = PictureUtils.getScaledBitmap(mPhotoFile.getPath(), mPhotoViewSize.x, mPhotoViewSize.y);
+		}
+
+		mPhotoView.setImageBitmap(bitmap);
 	}
 
 	//Method to respond to Intent received from target Fragment (DatePickerFragment)
@@ -339,6 +395,8 @@ public class CrimeFragment extends Fragment {
 			} finally {
 				c.close();
 			}
+		} else if (requestCode == REQUEST_PHOTO) {
+			updatePhotoView();
 		}
 	}
 
