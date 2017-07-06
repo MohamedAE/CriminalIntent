@@ -7,6 +7,7 @@ import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.ContactsContract;
+import android.provider.MediaStore;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.ShareCompat;
@@ -23,8 +24,11 @@ import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.EditText;
+import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.Toast;
 
+import java.io.File;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.UUID;
@@ -38,7 +42,8 @@ public class CrimeFragment extends Fragment {
 	//Request codes for target fragment (DatePickerFragment)
 	private static final int REQUEST_DATE = 0;
 	private static final int REQUEST_TIME = 1;
-	private static final int REQUEST_CONTACT = 1;
+	private static final int REQUEST_CONTACT = 2;
+	private static final int REQUEST_PHOTO = 3;
 
 	private Crime mCrime;
 	private EditText mTitleField;
@@ -47,6 +52,10 @@ public class CrimeFragment extends Fragment {
 	private CheckBox mSolvedCheckBox;
 	private Button mReportButton;
 	private Button mSuspectButton;
+	private ImageButton mPhotoButton;
+	private ImageView mPhotoView;
+
+	private File mPhotoFile;
 
 	/*
 	Accepts UUID
@@ -72,6 +81,8 @@ public class CrimeFragment extends Fragment {
 		UUID crimeId = (UUID) getArguments().getSerializable(ARG_CRIME_ID);
 
 		mCrime = CrimeLab.get(getActivity()).getCrime(crimeId);
+
+		mPhotoFile = CrimeLab.get(getActivity()).getPhotoFile(mCrime);
 	}
 
 	@Override
@@ -216,6 +227,32 @@ public class CrimeFragment extends Fragment {
 			mSuspectButton.setEnabled(false);
 		}
 
+		/* OPEN CAMERA BUTTON */
+		mPhotoButton = (ImageButton) v.findViewById(R.id.crime_camera);
+
+		//Implicit intent asking for permission to capture image
+		final Intent captureImage = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+
+		//Determine if device has valid camera app
+		boolean canTakePhoto = mPhotoFile != null && captureImage.resolveActivity(packageManager) != null;
+		//If true, enable button
+		mPhotoButton.setEnabled(canTakePhoto);
+
+		//If true, put image in intent
+		if (canTakePhoto) {
+			Uri uri = Uri.fromFile(mPhotoFile);
+			captureImage.putExtra(MediaStore.EXTRA_OUTPUT, uri);
+		}
+
+		mPhotoButton.setOnClickListener(new View.OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				startActivityForResult(captureImage, REQUEST_PHOTO);
+			}
+		});
+
+		mPhotoView = (ImageView) v.findViewById(R.id.crime_photo);
+
 		return v;
 	}
 
@@ -267,19 +304,12 @@ public class CrimeFragment extends Fragment {
 		}
 
 		//Extract Date object from Intent
-		Date date = (Date) data.getSerializableExtra(DatePickerFragment.EXTRA_DATE);
-		mCrime.setDate(date);
-
-		switch (requestCode) {
-			case REQUEST_DATE:
-				updateDate();
-				break;
-			case REQUEST_TIME:
-				updateTime();
-				break;
-		}
+		//Date date = (Date) data.getSerializableExtra(DatePickerFragment.EXTRA_DATE);
+		//mCrime.setDate(date);
 
 		if (requestCode == REQUEST_DATE) {
+			Date date = (Date) data.getSerializableExtra(DatePickerFragment.EXTRA_DATE);
+			mCrime.setDate(date);
 			updateDate();
 		} else if (requestCode == REQUEST_TIME) {
 			updateTime();

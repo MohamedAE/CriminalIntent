@@ -16,7 +16,7 @@ import java.util.Date;
 public abstract class PickerDialogFragment extends DialogFragment {
 
 	protected static final String ARG_DATE = "date";
-	public static final String EXTRA_DATE = "com.bignerd.ranch.android.criminalintent.date";
+	public static final String EXTRA_DATE = "com.bignerdranch.android.criminalintent.date";
 
 	protected Calendar mCalendar;
 
