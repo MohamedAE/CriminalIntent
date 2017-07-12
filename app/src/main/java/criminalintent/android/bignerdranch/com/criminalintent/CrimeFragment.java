@@ -1,6 +1,7 @@
 package criminalintent.android.bignerdranch.com.criminalintent;
 
 import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
@@ -60,7 +61,13 @@ public class CrimeFragment extends Fragment {
 	private ImageView mPhotoView;
 	private Point mPhotoViewSize;
 
+	private Callbacks mCallbacks;
+
 	private File mPhotoFile;
+
+	public interface Callbacks {
+		void onCrimeUpdated(Crime crime);
+	}
 
 	/*
 	Accepts UUID
@@ -75,6 +82,12 @@ public class CrimeFragment extends Fragment {
 		CrimeFragment fragment = new CrimeFragment();
 		fragment.setArguments(args);
 		return fragment;
+	}
+
+	@Override
+	public void onAttach(Context context) {
+		super.onAttach(context);
+		mCallbacks = (Callbacks) context;
 	}
 
 	@Override
@@ -95,6 +108,12 @@ public class CrimeFragment extends Fragment {
 		super.onPause();
 		//On pause, update this crime in the database
 		CrimeLab.get(getActivity()).updateCrime(mCrime);
+	}
+
+	@Override
+	public void onDetach() {
+		super.onDetach();
+		mCallbacks = null;
 	}
 
 	//Inflate menu instance with items defined in the file
@@ -137,6 +156,7 @@ public class CrimeFragment extends Fragment {
 			@Override
 			public void onTextChanged(CharSequence s, int start, int before, int count) {
 				mCrime.setTitle(s.toString());
+				updateCrime();
 			}
 
 			@Override
@@ -182,6 +202,7 @@ public class CrimeFragment extends Fragment {
 			public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
 				//Set the crime's solved property
 				mCrime.setSolved(isChecked);
+				updateCrime();
 			}
 		});
 
@@ -287,6 +308,11 @@ public class CrimeFragment extends Fragment {
 		return v;
 	}
 
+	private void updateCrime() {
+		CrimeLab.get(getActivity()).updateCrime(mCrime);
+		mCallbacks.onCrimeUpdated(mCrime);
+	}
+
 	//Update Button text
 	private void updateDate() {
 		SimpleDateFormat simpleDateFormat = new SimpleDateFormat("EEEE, MMM F, yyyy");
@@ -366,6 +392,7 @@ public class CrimeFragment extends Fragment {
 		if (requestCode == REQUEST_DATE) {
 			Date date = (Date) data.getSerializableExtra(DatePickerFragment.EXTRA_DATE);
 			mCrime.setDate(date);
+			updateCrime();
 			updateDate();
 		} else if (requestCode == REQUEST_TIME) {
 			updateTime();
@@ -391,11 +418,13 @@ public class CrimeFragment extends Fragment {
 				c.moveToFirst();
 				String suspect = c.getString(0);
 				mCrime.setSuspect(suspect);
+				updateCrime();
 				mSuspectButton.setText(suspect);
 			} finally {
 				c.close();
 			}
 		} else if (requestCode == REQUEST_PHOTO) {
+			updateCrime();
 			updatePhotoView();
 		}
 	}
